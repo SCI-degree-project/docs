@@ -1,0 +1,14 @@
+@startuml ""
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(admin, "Admin", "Manage the catalog of its furniture store")
+Person(user, "Usuario", "View products in the mobile app")
+
+System(system, "Furniture Cataloging System")
+
+Rel(admin, system, "Manage products and view statistics")
+Rel(user, system, "View store catalog")
+
+@enduml

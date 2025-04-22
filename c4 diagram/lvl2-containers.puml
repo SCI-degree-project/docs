@@ -1,0 +1,29 @@
+@startuml ""
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(admin, "Admin")
+Person(user, "User")
+
+System_Boundary(system, "Sistema de Catalogación de Muebles") {
+    Container(webApp, "Admin Dashboard (Web)", "React", "UI to manage store catalog and consult metrics")
+    Container(mobileApp, "Mobile App", "Kotlin", "UI to see the products of a store")
+    Container(apiGateway, "API Gateway", "Undefined", "Redirect the request to the services")
+    Container(productService, "Product Service", "Java Spring Boot", "Manage the products logic")
+    Container(mediaService, "Media Service", "Undefined", "Gestión de imágenes y modelos 3D")
+    ContainerDb(database, "Base de Datos", "PostgreSQL", "Shared Schema with products and media")
+    Container(cloudStorage, "Cloud Storage", "CloudfareR2", "Save multimedia data")
+}
+
+Rel(admin, webApp, "uses")
+Rel(user, mobileApp, "uses")
+Rel(webApp, apiGateway, "interact")
+Rel(mobileApp, apiGateway, "interact")
+Rel(apiGateway, productService, "redirect requests")
+Rel(apiGateway, mediaService, "redirect request")
+Rel(productService, database, "Read/Write")
+Rel(mediaService, database, "Read/Write")
+Rel(mediaService, cloudStorage, "Upload/Download")
+
+@enduml

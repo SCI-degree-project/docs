@@ -1,0 +1,25 @@
+@startuml ""
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+
+Container_Boundary(productService, "Product Service") {
+    Component(productController, "ProductController", " REST Controller ", "Expose CRUD endpoints")
+    Component(productLogic, "ProductService", "Servicio de dominio", "Bussines logic")
+    Component(productRepo, "ProductRepository", " ORM ", "Database access")
+}
+
+Rel(productController, productLogic, "Llama")
+Rel(productLogic, productRepo, "Lee/Escribe productos")
+
+Container_Boundary(mediaService, "Media Service") {
+    Component(mediaController, "MediaController", " REST Controller ", "Manges uploads/downloads")
+    Component(mediaProcessor, "MediaService", "Data processing", "Validate formats")
+    Component(mediaRepo, "MediaRepository", " ORM ", "Datbase access")
+    Component(cloudUploader, "CloudUploader", "Storage service", "Guarda archivos en cloud storage")
+}
+
+Rel(mediaController, mediaProcessor, "Envía archivos")
+Rel(mediaProcessor, mediaRepo, "Guarda metadatos")
+Rel(mediaProcessor, cloudUploader, "Sube archivos")
+
+@enduml
