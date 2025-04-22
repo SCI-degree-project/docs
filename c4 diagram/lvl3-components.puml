@@ -15,11 +15,11 @@ Container_Boundary(mediaService, "Media Service") {
     Component(mediaController, "MediaController", " REST Controller ", "Manges uploads/downloads")
     Component(mediaProcessor, "MediaService", "Data processing", "Validate formats")
     Component(mediaRepo, "MediaRepository", " ORM ", "Datbase access")
-    Component(cloudUploader, "CloudUploader", "Storage service", "Guarda archivos en cloud storage")
+    Component(cloudUploader, "CloudUploader", "Storage service", "Save files in cloud storage")
 }
 
-Rel(mediaController, mediaProcessor, "Envía archivos")
-Rel(mediaProcessor, mediaRepo, "Guarda metadatos")
-Rel(mediaProcessor, cloudUploader, "Sube archivos")
+Rel(mediaController, mediaProcessor, "Send files")
+Rel(mediaProcessor, mediaRepo, "Save data")
+Rel(mediaProcessor, cloudUploader, "Upload files")
 
 @enduml
