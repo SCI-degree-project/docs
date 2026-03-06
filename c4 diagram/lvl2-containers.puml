@@ -3,27 +3,46 @@
 
 LAYOUT_WITH_LEGEND()
 
-Person(admin, "Admin")
-Person(user, "User")
+Person(admin, "Administrador", "Gestiona el catálogo de su tienda de muebles")
+Person(user, "Usuario", "Visualiza productos desde la aplicación móvil")
 
 System_Boundary(system, "Sistema de Catalogación de Muebles") {
-    Container(webApp, "Admin Dashboard (Web)", "React", "UI to manage store catalog and consult metrics")
-    Container(mobileApp, "Mobile App", "Kotlin", "UI to see the products of a store")
-    Container(apiGateway, "API Gateway", "Undefined", "Redirect the request to the services")
-    Container(productService, "Product Service", "Java Spring Boot", "Manage the products logic")
-    Container(mediaService, "Media Service", "Undefined", "Gestión de imágenes y modelos 3D")
-    ContainerDb(database, "Base de Datos", "PostgreSQL", "Shared Schema with products and media")
-    Container(cloudStorage, "Cloud Storage", "CloudfareR2", "Save multimedia data")
+    Container(webApp, "Panel de Administración (Web)", "React", "Interfaz para administrar el catálogo y consultar métricas")
+    Container(mobileApp, "Aplicación Móvil", "Kotlin", "Interfaz para explorar productos en RA")
+
+    Container(apiGateway, "API Gateway", "Node.js", "Redirige solicitudes a los servicios correspondientes")
+
+    Container(authService, "Servicio de Autenticación", "NestJS", "Gestiona usuarios, roles y tenants")
+    ContainerDb(authDb, "Base de Datos de Usuarios", "PostgreSQL", "Almacena usuarios y metadatos de autenticación")
+
+    Container(productService, "Servicio de Productos", "Java Spring Boot", "Lógica de negocio para gestión de productos")
+    Container(mediaService, "Servicio de Medios", "Node.js", "Gestión de imágenes y modelos 3D")
+    Container(modelingService, "Servicio de Modelado 3D", "Python + COLMAP", "Genera modelos 3D a partir de imágenes (fotogrametría)")
+
+    ContainerDb(productsDb, "Base de Datos de Productos", "PostgreSQL", "Almacena información de productos y medios en esquema compartido")
 }
 
-Rel(admin, webApp, "uses")
-Rel(user, mobileApp, "uses")
-Rel(webApp, apiGateway, "interact")
-Rel(mobileApp, apiGateway, "interact")
-Rel(apiGateway, productService, "redirect requests")
-Rel(apiGateway, mediaService, "redirect request")
-Rel(productService, database, "Read/Write")
-Rel(mediaService, database, "Read/Write")
-Rel(mediaService, cloudStorage, "Upload/Download")
+System_Ext(cloudStorage, "Almacenamiento en la Nube", "Cloudflare R2", "Guarda imágenes y modelos 3D")
+System_Ext(firebaseAuth, "Firebase Authentication", "Proporciona autenticación con correo y proveedores externos")
+Lay_L(authService, firebaseAuth)
+
+
+Rel(admin, webApp, "Utiliza")
+Rel(user, mobileApp, "Utiliza")
+
+Rel(webApp, apiGateway, "Envía solicitudes")
+Rel(mobileApp, apiGateway, "Envía solicitudes")
+
+Rel(apiGateway, authService, "Redirige solicitudes")
+Rel(apiGateway, productService, "Redirige solicitudes")
+Rel(apiGateway, mediaService, "Redirige solicitudes")
+Rel(apiGateway, modelingService, "Redirige solicitudes")
+
+Rel(authService, authDb, "Lee y escribe")
+Rel(authService, firebaseAuth, "Verifica tokens y claims personalizados", "HTTPS")
+
+Rel(productService, productsDb, "Lee y escribe")
+Rel(mediaService, cloudStorage, "Sube y descarga archivos", "HTTPS")
+Rel(modelingService, cloudStorage, "Guarda modelos generados", "HTTPS")
 
 @enduml

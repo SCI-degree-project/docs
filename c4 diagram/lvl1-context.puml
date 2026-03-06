@@ -3,12 +3,18 @@
 
 LAYOUT_WITH_LEGEND()
 
-Person(admin, "Admin", "Manage the catalog of its furniture store")
-Person(user, "Usuario", "View products in the mobile app")
+Person(admin, "Administrador", "Gestiona el catálogo de su tienda de muebles")
+Person(user, "Usuario", "Visualiza productos desde la aplicación móvil")
 
-System(system, "Furniture Cataloging System")
+System(system, "Sistema de Catalogación de Muebles", "Permite gestionar y visualizar productos en 3D con RA")
 
-Rel(admin, system, "Manage products and view statistics")
-Rel(user, system, "View store catalog")
+System_Ext(cloudflare, "Cloudflare R2", "Almacenamiento de modelos 3D e imágenes de productos")
+System_Ext(firebase, "Firebase Authentication", "Autenticación de usuarios mediante correo")
+
+Rel(admin, system, "Gestiona productos y visualiza estadísticas")
+Rel(user, system, "Explora el catálogo de la tienda")
+
+Rel(system, cloudflare, "Guarda y accede a imágenes y modelos 3D", "HTTPS")
+Rel(system, firebase, "Autentica a los usuarios", "HTTPS")
 
 @enduml

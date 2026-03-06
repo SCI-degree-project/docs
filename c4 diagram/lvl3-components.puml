@@ -1,25 +1,31 @@
 @startuml ""
 !includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
-
 Container_Boundary(productService, "Product Service") {
-    Component(productController, "ProductController", " REST Controller ", "Expose CRUD endpoints")
-    Component(productLogic, "ProductService", "Servicio de dominio", "Bussines logic")
-    Component(productRepo, "ProductRepository", " ORM ", "Database access")
+    Component(productController, "ProductController", "REST Controller", "Handles HTTP requests for products (CRUD operations)")
+    Component(productLogic, "ProductService", "Domain Service", "Implements business logic for managing products")
+    Component(productRepo, "ProductRepository", "ORM Repository", "Provides access to the relational database using JPA")
 }
 
-Rel(productController, productLogic, "Llama")
-Rel(productLogic, productRepo, "Lee/Escribe productos")
+Rel(productController, productLogic, "Invokes")
+Rel(productLogic, productRepo, "Reads/Writes to")
 
 Container_Boundary(mediaService, "Media Service") {
-    Component(mediaController, "MediaController", " REST Controller ", "Manges uploads/downloads")
-    Component(mediaProcessor, "MediaService", "Data processing", "Validate formats")
-    Component(mediaRepo, "MediaRepository", " ORM ", "Datbase access")
-    Component(cloudUploader, "CloudUploader", "Storage service", "Save files in cloud storage")
+    Component(mediaController, "MediaController", "REST Controller", "Handles HTTP requests for file uploads and downloads")
+    Component(mediaProcessor, "MediaService", "Processing Service", "Validates file formats, compresses media, coordinates uploads")
+    Component(cloudUploader, "CloudUploader", "Cloud Storage Adapter", "Saves and retrieves media files from external storage (e.g., Cloudflare R2)")
 }
 
-Rel(mediaController, mediaProcessor, "Send files")
-Rel(mediaProcessor, mediaRepo, "Save data")
-Rel(mediaProcessor, cloudUploader, "Upload files")
+Rel(mediaController, mediaProcessor, "Sends files to")
+Rel(mediaProcessor, cloudUploader, "Uploads files")
+
+Container_Boundary(authService, "Authentication Service") {
+    Component(authController, "AuthController", "REST Controller", "Exposes authentication and user management endpoints")
+    Component(authManager, "AuthManager", "Integration Layer", "Handles communication with Auth0 via Management API")
+    Component(tokenVerifier, "TokenVerifier", "Security Component", "Validates JWTs and extracts claims for authorization")
+}
+
+Rel(authController, authManager, "Delegates to")
+Rel(authManager, tokenVerifier, "Uses for token validation")
 
 @enduml
